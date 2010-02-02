@@ -1,0 +1,23 @@
+<Project DefaultTargets="Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask
+    AssemblyFile="..\xunit\xunitext.runner.msbuild.dll"
+    TaskName="XunitExt.Runner.MSBuild.xunit"/>
+
+  <Target Name="CopyXunit">
+    <Copy SourceFiles="..\xunit\xunit.dll" DestinationFolder="."/>
+  </Target>
+  
+  <Target Name="Build" DependsOnTargets="CopyXunit">
+    <Csc EmitDebugInformation="true" OutputAssembly="MSBuildSample.dll" Sources="MSBuildSample.cs" References="xunit.dll" TargetType="library"/>
+  </Target>
+  
+  <Target Name="Test" DependsOnTargets="Build">
+    <xunit Assembly="MSBuildSample.dll"/>
+  </Target>
+  
+  <Target Name="Clean">
+    <Delete Files="xunit.dll;MSBuildSample.dll;MSBuildSample.pdb"/>
+  </Target>
+
+</Project>

@@ -1,0 +1,9 @@
+glob:Main/Help
+glob:Main/*.html
+glob:Main/*.xml
+glob:Main/*.zip
+glob:**/bin
+glob:**/obj
+glob:**/*.suo
+glob:**/*.user
+glob:**/*.cache

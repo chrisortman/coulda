@@ -1,0 +1,6 @@
+<ignore xmlns='http://www.codeplex.com/schema/IgnoreListSchema-1.0.xsd'>
+  <add>*.dll</add>
+  <add>*.pdb</add>
+  <add>*.xml</add>
+  <add>*.html</add>
+</ignore>

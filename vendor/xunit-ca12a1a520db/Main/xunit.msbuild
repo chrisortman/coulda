@@ -1,0 +1,218 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask
+      AssemblyFile="3rdParty\CodePlex.MSBuildTasks.dll"
+      TaskName="CodePlex.MSBuildTasks.RegexReplace"/>
+  <UsingTask
+      AssemblyFile="3rdParty\CodePlex.MSBuildTasks.dll"
+      TaskName="CodePlex.MSBuildTasks.Unzip"/>
+  <UsingTask
+      AssemblyFile="3rdParty\CodePlex.MSBuildTasks.dll"
+      TaskName="CodePlex.MSBuildTasks.Zip"/>
+
+  <!-- Settings -->
+
+  <PropertyGroup Condition="'$(BuildType)' == ''">
+    <BuildType>Release</BuildType>
+  </PropertyGroup>
+
+  <!-- Cascading attempts to find a build number -->
+
+  <PropertyGroup Condition="'$(BuildNumber)' == ''">
+    <BuildNumber>$(BUILD_NUMBER)</BuildNumber>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildNumber)' == ''">
+    <BuildNumber>$(ccnetlabel)</BuildNumber>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildNumber)' == ''">
+    <BuildNumber>0</BuildNumber>
+  </PropertyGroup>
+
+  <!-- Build server targets -->
+
+  <Target Name="TeamCity" DependsOnTargets="Clean;SetVersionNumber;Test;UpdateInstaller;Zip" />
+  <!--<Target Name="TeamCity" DependsOnTargets="Clean;SetVersionNumber;Test;UpdateInstaller;Zip;Help" />-->
+
+  <!-- Individiual targets -->
+
+  <Target Name="Clean">
+    <CreateItem Include="xunit-build-*.zip;xunit-symbols-*.zip;Test.*.html;Test.*.xml;TestResults.xml">
+      <Output TaskParameter="Include" ItemName="CleanFileList"/>
+    </CreateItem>
+    <Delete Files="@(CleanFileList)"/>
+    <MSBuild
+        Projects="xunit.sln"
+        Targets="Clean"
+        Properties="Configuration=$(BuildType)"/>
+    <RemoveDir Directories="xunit.console\bin\$(BuildType).x86" ContinueOnError="true"/>
+    <RemoveDir Directories="xunit.gui\bin\$(BuildType).x86" ContinueOnError="true"/>
+  </Target>
+
+  <Target Name="Build">
+    <MSBuild
+        Projects="xunit.sln"
+        Targets="Build"
+        Properties="Configuration=$(BuildType)"/>
+
+    <!-- Build xunit.console.x86 by munging the xunit.console project -->
+    <Copy
+        SourceFiles="xunit.console\xunit.console.csproj"
+        DestinationFiles="xunit.console\xunit.console.x86.csproj"/>
+    <RegexReplace
+        Pattern="&lt;AssemblyName>xunit\.console&lt;/AssemblyName>"
+        Replacement="&lt;AssemblyName>xunit.console.x86&lt;/AssemblyName>"
+        Files="xunit.console\xunit.console.x86.csproj"/>
+    <RegexReplace
+        Pattern="&lt;OutputPath>bin\\(\w+)\\&lt;/OutputPath>"
+        Replacement="&lt;OutputPath>bin\$1.x86\&lt;/OutputPath>"
+        Files="xunit.console\xunit.console.x86.csproj"/>
+    <MSBuild
+        Projects="xunit.console\xunit.console.x86.csproj"
+        Targets="Build"
+        Properties="PlatformTarget=x86;Configuration=$(BuildType)"/>
+    <RegexReplace
+        Pattern="type=&quot;Xunit.ConsoleClient.XunitConsoleConfigurationSection, xunit.console&quot;"
+        Replacement="type=&quot;Xunit.ConsoleClient.XunitConsoleConfigurationSection, xunit.console.x86&quot;"
+        Files="xunit.console\bin\$(BuildType).x86\xunit.console.x86.exe.config" />
+    <Delete
+        Files="xunit.console\xunit.console.x86.csproj" />
+
+    <!-- Build xunit.gui.x86 by munging the xunit.gui project -->
+    <Copy
+        SourceFiles="xunit.gui\xunit.gui.csproj"
+        DestinationFiles="xunit.gui\xunit.gui.x86.csproj"/>
+    <RegexReplace
+        Pattern="&lt;AssemblyName>xunit\.gui&lt;/AssemblyName>"
+        Replacement="&lt;AssemblyName>xunit.gui.x86&lt;/AssemblyName>"
+        Files="xunit.gui\xunit.gui.x86.csproj"/>
+    <RegexReplace
+        Pattern="&lt;OutputPath>bin\\(\w+)\\&lt;/OutputPath>"
+        Replacement="&lt;OutputPath>bin\$1.x86\&lt;/OutputPath>"
+        Files="xunit.gui\xunit.gui.x86.csproj"/>
+    <MSBuild
+        Projects="xunit.gui\xunit.gui.x86.csproj"
+        Targets="Build"
+        Properties="PlatformTarget=x86;Configuration=$(BuildType)"/>
+    <Delete
+        Files="xunit.gui\xunit.gui.x86.csproj" />
+  </Target>
+
+  <Target Name="Test" DependsOnTargets="Build">
+    <MSBuild
+        Projects="xunit.tests.msbuild"
+        Properties="BuildType=$(BuildType)" />
+  </Target>
+
+  <Target Name="Help" DependsOnTargets="Build">
+    <Exec Command='"C:\Program Files\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe" xunit.shfb' />
+  </Target>
+
+  <Target Name="SetVersionNumber">
+    <RegexReplace
+        Pattern='AssemblyVersion\("(\d+\.\d+\.\d+)\.\d+"\)'
+        Replacement='AssemblyVersion("$1.$(BuildNumber)")'
+        Files='GlobalAssemblyInfo.cs'/>
+    <RegexReplace
+        Pattern='assemblyIdentity version="(\d+\.\d+\.\d+)\.\d+"'
+        Replacement='assemblyIdentity version="$1.$(BuildNumber)"'
+        Files='xunit.installer\App.manifest'/>
+  </Target>
+
+  <Target Name='UpdateInstaller'>
+    <CreateItem
+        Include="xunit\bin\$(BuildType)\xunit.dll">
+      <Output TaskParameter="Include" ItemName="InstallerFileList"/>
+    </CreateItem>
+
+    <!-- Update the MVC 1.0 C# (VS2008) project template -->
+    <RemoveDir Directories='InstallerTemp'/>
+    <Unzip
+        ZipFileName='xunit.installer\Templates\MVC1-CS-VS2008.zip'
+        OutputDirectory='InstallerTemp'/>
+    <RemoveDir Directories='InstallerTemp\3rdParty'/>
+    <MakeDir Directories='InstallerTemp\3rdParty'/>
+    <Copy
+        SourceFiles='@(InstallerFileList)'
+        DestinationFolder='InstallerTemp\3rdParty'/>
+    <Delete Files='xunit.installer\Templates\MVC1-CS-VS2008.zip'/>
+    <Zip
+        ZipFileName='xunit.installer\Templates\MVC1-CS-VS2008.zip'
+        Directory='InstallerTemp'/>
+
+    <!-- Update the MVC 2 C# (VS2008) project template -->
+    <RemoveDir Directories='InstallerTemp'/>
+    <Unzip
+        ZipFileName='xunit.installer\Templates\MVC2-CS-VS2008.zip'
+        OutputDirectory='InstallerTemp'/>
+    <RemoveDir Directories='InstallerTemp\3rdParty'/>
+    <MakeDir Directories='InstallerTemp\3rdParty'/>
+    <Copy
+        SourceFiles='@(InstallerFileList)'
+        DestinationFolder='InstallerTemp\3rdParty'/>
+    <Delete Files='xunit.installer\Templates\MVC2-CS-VS2008.zip'/>
+    <Zip
+        ZipFileName='xunit.installer\Templates\MVC2-CS-VS2008.zip'
+        Directory='InstallerTemp'/>
+
+    <!-- Update the MVC 1.0 VB (VS2008) project template -->
+    <RemoveDir Directories='InstallerTemp'/>
+    <Unzip
+        ZipFileName='xunit.installer\Templates\MVC1-VB-VS2008.zip'
+        OutputDirectory='InstallerTemp'/>
+    <RemoveDir Directories='InstallerTemp\3rdParty'/>
+    <MakeDir Directories='InstallerTemp\3rdParty'/>
+    <Copy
+        SourceFiles='@(InstallerFileList)'
+        DestinationFolder='InstallerTemp\3rdParty'/>
+    <Delete Files='xunit.installer\Templates\MVC1-VB-VS2008.zip'/>
+    <Zip
+        ZipFileName='xunit.installer\Templates\MVC1-VB-VS2008.zip'
+        Directory='InstallerTemp'/>
+
+    <!-- Update the MVC 2 VB (VS2008) project template -->
+    <RemoveDir Directories='InstallerTemp'/>
+    <Unzip
+        ZipFileName='xunit.installer\Templates\MVC2-VB-VS2008.zip'
+        OutputDirectory='InstallerTemp'/>
+    <RemoveDir Directories='InstallerTemp\3rdParty'/>
+    <MakeDir Directories='InstallerTemp\3rdParty'/>
+    <Copy
+        SourceFiles='@(InstallerFileList)'
+        DestinationFolder='InstallerTemp\3rdParty'/>
+    <Delete Files='xunit.installer\Templates\MVC2-VB-VS2008.zip'/>
+    <Zip
+        ZipFileName='xunit.installer\Templates\MVC2-VB-VS2008.zip'
+        Directory='InstallerTemp'/>
+
+    <!-- Rebuild xunit.installer.exe with the new templates -->
+    <RemoveDir Directories='InstallerTemp'/>
+    <MSBuild
+        Projects='xunit.installer\xunit.installer.csproj'
+        Targets='Build'
+        Properties='Configuration=$(BuildType);SolutionDir=$(MSBuildProjectDirectory)\'/>
+  </Target>
+
+  <Target Name="Zip">
+    <CreateItem
+        Include="xunit\bin\$(BuildType)\xunit.???;xunit\bin\$(BuildType)\xunit.dll.tdnet;xunit.console\bin\$(BuildType)\xunit.console.exe*;xunit.console\bin\$(BuildType).x86\xunit.console.x86.exe*;xunit.console\bin\$(BuildType)\*.xslt;xunit.gui\bin\$(BuildType)\xunit.gui.exe;xunit.gui\bin\$(BuildType).x86\xunit.gui.x86.exe;xunit.runner.utility\bin\$(BuildType)\xunit.runner.utility.???;xunit.extensions\bin\$(BuildType)\xunit.extensions.???;Xunit.Installer\bin\$(BuildType)\xunit.installer.exe;xunit.runner.tdnet\bin\$(BuildType)\xunit.runner.tdnet.dll;xunit.runner.msbuild\bin\$(BuildType)\xunit.runner.msbuild.dll"
+        Exclude="**\*.pdb">
+      <Output TaskParameter="Include" ItemName="ZipFileList"/>
+    </CreateItem>
+    <Delete Files="xunit-build-$(BuildNumber).zip"/>
+    <Zip
+        ZipFileName="xunit-build-$(BuildNumber).zip"
+        Files="@(ZipFileList)"
+        StripPath="true"/>
+
+    <CreateItem
+        Include="xunit\bin\$(BuildType)\xunit.pdb;xunit.console\bin\$(BuildType)\xunit.console.pdb;xunit.console\bin\$(BuildType).x86\xunit.console.x86.pdb;xunit.gui\bin\$(BuildType)\xunit.gui.pdb;xunit.gui\bin\$(BuildType).x86\xunit.gui.x86.pdb;xunit.runner.utility\bin\$(BuildType)\xunit.runner.utility.pdb;xunit.extensions\bin\$(BuildType)\xunit.extensions.pdb;Xunit.Installer\bin\$(BuildType)\xunit.installer.pdb;xunit.runner.tdnet\bin\$(BuildType)\xunit.runner.tdnet.pdb;xunit.runner.msbuild\bin\$(BuildType)\xunit.runner.msbuild.pdb">
+      <Output TaskParameter="Include" ItemName="ZipPdbFileList"/>
+    </CreateItem>
+    <Delete Files="xunit-symbols-$(BuildNumber).zip"/>
+    <Zip
+        ZipFileName="xunit-symbols-$(BuildNumber).zip"
+        Files="@(ZipPdbFileList)"
+        StripPath="true"/>
+  </Target>
+
+</Project>
