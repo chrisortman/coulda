@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{648CA99E-9B15-4EC9-9632-07D877204E19}</ProjectGuid>
+    <ProjectGuid>{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Coulda.Test</RootNamespace>
-    <AssemblyName>Coulda.Test</AssemblyName>
+    <RootNamespace>Coulda.Examples</RootNamespace>
+    <AssemblyName>Coulda.Examples</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,40 +38,25 @@
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="test.utility, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\xunit-1.5\test.utility.dll</HintPath>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="xunit, Version=1.5.0.1479, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\xunit-1.5\xunit.dll</HintPath>
     </Reference>
-    <Reference Include="xunit.runner.utility, Version=1.5.0.1479, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\xunit-1.5\xunit.runner.utility.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RunningTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleExample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Coulda.Examples\Coulda.Examples.csproj">
-      <Project>{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}</Project>
-      <Name>Coulda.Examples</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\coulda\Coulda.csproj">
+    <ProjectReference Include="..\coulda\Coulda.csproj">
       <Project>{BB834711-AA5E-44CB-B316-32C2A64CB078}</Project>
       <Name>Coulda</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Coulda.Examples.dll.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

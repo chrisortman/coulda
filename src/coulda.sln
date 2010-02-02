@@ -1,9 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coulda.Test", "..\test\coulda.Test\coulda.Test.csproj", "{648CA99E-9B15-4EC9-9632-07D877204E19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.Test", "..\test\coulda.Test\Coulda.Test.csproj", "{648CA99E-9B15-4EC9-9632-07D877204E19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coulda", "coulda\coulda.csproj", "{BB834711-AA5E-44CB-B316-32C2A64CB078}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda", "coulda\Coulda.csproj", "{BB834711-AA5E-44CB-B316-32C2A64CB078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.Examples", "Coulda.Examples\Coulda.Examples.csproj", "{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +20,10 @@ Global
 		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DE908CF-B2CB-43F9-BCCA-1250E24FC3BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
