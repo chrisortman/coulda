@@ -1,0 +1,26 @@
+
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coulda.Test", "..\test\coulda.Test\coulda.Test.csproj", "{648CA99E-9B15-4EC9-9632-07D877204E19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coulda", "coulda\coulda.csproj", "{BB834711-AA5E-44CB-B316-32C2A64CB078}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{648CA99E-9B15-4EC9-9632-07D877204E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648CA99E-9B15-4EC9-9632-07D877204E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648CA99E-9B15-4EC9-9632-07D877204E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648CA99E-9B15-4EC9-9632-07D877204E19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB834711-AA5E-44CB-B316-32C2A64CB078}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
