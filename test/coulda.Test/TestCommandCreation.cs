@@ -34,5 +34,22 @@ namespace Coulda.Test
             should.Should();
             Assert.True(ranShould);
         }
+
+        [Fact]
+        public void Should_be_able_to_nest_contexts()
+        {
+            var context = new CouldaTestContext("My context");
+            context.Should("have a method",null);
+            context.Should("have a second method",null);
+            context.Context("that is nested", ctx =>
+            {
+                ctx.Should("have a should",null);
+            });
+
+            var testNames = context.GetTestDescriptions();
+            Assert.Equal(3, testNames.Count());
+            Assert.Contains("My context that is nested should have a should",testNames);
+        }
     }
+
 }

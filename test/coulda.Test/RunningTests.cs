@@ -50,5 +50,19 @@ namespace Coulda.Test
                 ResultXmlUtility.AssertAttribute(resultNode, "result", "Fail");
             }
         }
+
+        [Fact]
+        public void Ensure_context_behaves_as_expected_wrt_scope()
+        {
+            var result = TestHelper.RunExampleTest("Coulda.Examples.ScopeContextExample", "Nested_context_scope");
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Should_be_able_to_run_some_setup_code()
+        {
+            var result = TestHelper.RunExampleTest("Coulda.Examples.ScopeContextExample", "Context_with_setup");
+            Assert.True(result);
+        }
     }
 }

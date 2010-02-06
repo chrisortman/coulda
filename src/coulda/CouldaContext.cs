@@ -76,11 +76,13 @@ namespace Coulda.Test
         private string _description;
         private IMethodInfo _method;
         private Queue<ShouldContext> _shoulds;
+        private List<CouldaTestContext> _nestedContexts;
 
         public CouldaTestContext(string description)
         {
             _description = description;
             _shoulds = new Queue<ShouldContext>();
+            _nestedContexts = new List<CouldaTestContext>();
         }
 
         //METHODS MENT FOR USER
@@ -99,14 +101,53 @@ namespace Coulda.Test
 
         public IEnumerable<string> GetTestDescriptions()
         {
-            return _shoulds.ToArray().Select(x => String.Format("{0} should {1}",_description, x.Description));
+            foreach(var ctx in _nestedContexts)
+            {
+               foreach(var test in ctx.GetTestDescriptions())
+               {
+                   yield return test;
+               }
+            }
+
+            var myShoulds = _shoulds.ToArray();
+            foreach(var s in myShoulds)
+            {
+                yield return FormatShould(s);
+            }
         }
 
+        private string FormatShould(ShouldContext should)
+        {
+            return String.Format("{0} should {1}", _description, should.Description);
+        }
 
         public ShouldContext GetTestByDescription(string description)
         {
-            var lookup = _shoulds.ToDictionary(k => String.Format("{0} should {1}", _description, k.Description));
-            return lookup[description];
+            var myShoulds = _shoulds.ToDictionary(k => FormatShould(k));
+            if(myShoulds.ContainsKey(description))
+            {
+                return myShoulds[description];
+            }
+            else
+            {
+                foreach(var ctx in _nestedContexts)
+                {
+                    var nested = ctx.GetTestByDescription(description);
+                    if(nested != null)
+                    {
+                        return nested;
+                    }
+                }
+            }
+            
+            throw new ArgumentException("No test "+ description + " was found");
+        }
+
+        public void Context(string description, Action<CouldaTestContext> test)
+        {
+            var ctx = new CouldaTestContext(_description + " " + description);
+            test(ctx);
+            _nestedContexts.Add(ctx);
         }
     }
 }
