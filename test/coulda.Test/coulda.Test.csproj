@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RunningTests.cs" />
+    <Compile Include="TestCommandCreation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Coulda.Examples\Coulda.Examples.csproj">
