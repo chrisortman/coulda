@@ -60,6 +60,10 @@ namespace Coulda.Test
         {
             var contextObject = (CouldaTestContext) _method.MethodInfo.Invoke(testClass, null);
             var test = contextObject.GetTestByDescription(DisplayName);
+            if(test.Setup != null)
+            {
+                test.Setup();
+            }
             test.Should();
 
             return new PassedResult(_method, DisplayName);
@@ -70,6 +74,7 @@ namespace Coulda.Test
     {
         public string Description { get; set; }
         public Action Should { get; set; }
+        public Action Setup { get; set; }
     }
     public class CouldaTestContext
     {
@@ -77,7 +82,7 @@ namespace Coulda.Test
         private IMethodInfo _method;
         private Queue<ShouldContext> _shoulds;
         private List<CouldaTestContext> _nestedContexts;
-
+        private Action _before;
         public CouldaTestContext(string description)
         {
             _description = description;
@@ -88,12 +93,18 @@ namespace Coulda.Test
         //METHODS MENT FOR USER
         public void NoSetup() {}
 
+        public void Before(Action setup)
+        {
+            _before = setup; 
+        }
         public void Should(string description, Action action)
         {
             _shoulds.Enqueue(new ShouldContext() { Description = description, Should = action});
         }
 
         //----------
+
+
         internal void SetMethodInfo(IMethodInfo methodInfo)
         {
             _method = methodInfo;
@@ -126,7 +137,9 @@ namespace Coulda.Test
             var myShoulds = _shoulds.ToDictionary(k => FormatShould(k));
             if(myShoulds.ContainsKey(description))
             {
-                return myShoulds[description];
+                var should= myShoulds[description];
+                should.Setup = _before;
+                return should;
             }
             else
             {
@@ -135,6 +148,7 @@ namespace Coulda.Test
                     var nested = ctx.GetTestByDescription(description);
                     if(nested != null)
                     {
+                        nested.Setup = ctx._before;
                         return nested;
                     }
                 }

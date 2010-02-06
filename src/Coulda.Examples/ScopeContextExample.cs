@@ -35,6 +35,19 @@ namespace Coulda.Examples
                 string s = "hello";
                 i = 5;
 
+                ctx.Context("and a nested context",nc =>
+                {
+                    nc.Before(() =>
+                    {
+                        i = i + 1;
+                    });
+                    
+                    nc.Should("still be predictable",() =>
+                    {
+                        Assert.Equal(6,i);
+                    });
+                });
+
                 ctx.Should("be good to go", () =>
                 {
                     i = i*2;
