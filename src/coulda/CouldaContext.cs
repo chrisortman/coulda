@@ -60,12 +60,7 @@ namespace Coulda.Test
         {
             var contextObject = (CouldaTestContext) _method.MethodInfo.Invoke(testClass, null);
             var test = contextObject.GetTestByDescription(DisplayName);
-            if(test.Setup != null)
-            {
-                test.Setup();
-            }
-            test.Should();
-
+            test.Run();
             return new PassedResult(_method, DisplayName);
         }
     }
@@ -75,6 +70,25 @@ namespace Coulda.Test
         public string Description { get; set; }
         public Action Should { get; set; }
         public Action Setup { get; set; }
+
+        protected virtual string ShouldText {
+            get { return "should"; }
+        }
+
+        public virtual void Run()
+        {
+            if(Setup != null)
+            {
+                Setup();
+            }
+
+            Should();
+        }
+
+        public virtual string GenerateDescription(string contextDescription)
+        {
+            return String.Join(" ", new[] {contextDescription, ShouldText, Description});
+        }
     }
     public class CouldaTestContext
     {
@@ -97,9 +111,18 @@ namespace Coulda.Test
         {
             _before = setup; 
         }
+
         public void Should(string description, Action action)
         {
             _shoulds.Enqueue(new ShouldContext() { Description = description, Should = action});
+        }
+
+        public ShouldChangeContext<VALUE> ShouldChange<VALUE>(string description, Func<object, VALUE> valueGetter)
+        {
+            var shouldChangeContext = new ShouldChangeContext<VALUE> {Description = description, Accessor = valueGetter};
+
+            _shoulds.Enqueue(shouldChangeContext);
+            return shouldChangeContext;
         }
 
         //----------
@@ -129,7 +152,8 @@ namespace Coulda.Test
 
         private string FormatShould(ShouldContext should)
         {
-            return String.Format("{0} should {1}", _description, should.Description);
+            return should.GenerateDescription(_description);
+            //return String.Format("{0} {1} {2}", _description,should.ShouldText, should.Description);
         }
 
         public ShouldContext GetTestByDescription(string description)
@@ -162,6 +186,60 @@ namespace Coulda.Test
             var ctx = new CouldaTestContext(_description + " " + description);
             test(ctx);
             _nestedContexts.Add(ctx);
+        }
+    }
+
+    public class CAssert
+    {
+        public static void Equal<T>(T expected, T actual, string message)
+        {
+            var comparer = new AssertComparer<T>();
+            if (comparer.Compare(expected, actual) != 0)
+                throw new AssertActualExpectedException(expected, actual, message);
+        }
+    }
+
+    public class ShouldChangeContext<VALUE> : ShouldContext
+    {
+        private VALUE _from;
+        private VALUE _to;
+        public Func<object,VALUE> Accessor { get; set; }
+
+
+        public override string GenerateDescription(string contextDescription)
+        {
+            return String.Join(" ",
+                               new[]
+                               {
+                                   contextDescription, "should change", Description,
+                                   String.Format("from {0} to {1}", _from, _to)
+                               });
+        }
+        public ShouldChangeContext<VALUE> From(VALUE value)
+        {
+            _from = value;
+            return this;
+        }
+
+        public ShouldChangeContext<VALUE> To(VALUE value)
+        {
+            _to = value;
+            return this;
+        }
+
+        public override void Run()
+        {
+            var initialValue = Accessor(this);
+            
+            CAssert.Equal(_from, initialValue, "From values did not match");
+
+            Should = () =>
+            {
+                var result = Accessor(this);
+                CAssert.Equal(_to, result, "To values did not match");
+            };
+
+            base.Run();
         }
     }
 }

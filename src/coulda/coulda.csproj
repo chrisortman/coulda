@@ -45,7 +45,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertComparer.cs" />
     <Compile Include="CouldaContext.cs" />
+    <Compile Include="ExpressionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

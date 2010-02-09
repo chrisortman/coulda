@@ -33,7 +33,7 @@ namespace Coulda.Test
                     });
                 }
                 XmlNode resultNode = ResultXmlUtility.GetResult(lastNode);
-                ResultXmlUtility.AssertAttribute(resultNode, "result", "Pass");
+                //ResultXmlUtility.AssertAttribute(resultNode, "result", "Pass");
                 if(resultNode.Attributes["result"].Value == "Pass")
                 {
                     return true;
@@ -43,5 +43,15 @@ namespace Coulda.Test
             return false;
         }
 
+    }
+    
+    public static class TestHelper<TESTCLASS>
+    {
+        public static bool RunExampleTest(Expression<Func<TESTCLASS,CouldaTestContext>> testMethod)
+        {
+            var className = typeof(TESTCLASS).FullName;
+            var methodName = testMethod.MethodName();
+            return TestHelper.RunExampleTest(className, methodName);
+        }
     }
 }

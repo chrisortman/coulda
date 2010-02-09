@@ -52,6 +52,7 @@
     <Compile Include="FailingExample.cs" />
     <Compile Include="ScopeContextExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShouldChangeExample.cs" />
     <Compile Include="SimpleExample.cs" />
   </ItemGroup>
   <ItemGroup>

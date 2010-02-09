@@ -3,6 +3,8 @@ namespace Coulda.Test
     using System.IO;
     using System.Xml;
 
+    using Examples;
+
     using TestUtility;
 
     using Xunit;
@@ -61,8 +63,32 @@ namespace Coulda.Test
         [Fact]
         public void Should_be_able_to_run_some_setup_code()
         {
-            var result = TestHelper.RunExampleTest("Coulda.Examples.ScopeContextExample", "Context_with_setup");
+           // var result = TestHelper.RunExampleTest("Coulda.Examples.ScopeContextExample", "Context_with_setup");
+            var result = TestHelper<ScopeContextExample>.RunExampleTest(x => x.Context_with_setup());
             Assert.True(result);
+        }
+        
+        [Fact]
+        public void Should_be_able_to_use_should_change()
+        {
+            //var result = TestHelper.RunExampleTest("Coulda.Examples.ShouldChangeExample", "Should_change_pass_test");
+            var result =
+                TestHelper<ShouldChangeExample>.RunExampleTest(x => x.Should_change_pass_test());
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Should_change_should_faild_if_from_is_wrong()
+        {
+            Assert.False(
+                TestHelper<ShouldChangeExample>.RunExampleTest(x => x.Should_change_wrong_from_test()));
+        }
+
+        [Fact]
+        public void Should_change_should_fail_if_to_is_wrong()
+        {
+            Assert.False(
+                TestHelper<ShouldChangeExample>.RunExampleTest(x => x.Should_change_wrong_to_test()));
         }
     }
 }
