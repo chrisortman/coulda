@@ -53,3 +53,23 @@ I want to write tests like this in C#
                 ctx.ShouldChange("the number", x => number).From(1).To(5);
             });
         }
+        
+        
+Something else to maybe brainstorm...
+
+     public void BetterSyntax()
+        {
+            Describe("1.00", subject =>
+            {
+                subject.WhenUsedToCreateAmount().ShouldBe(1M);
+                subject.WhenValidated().ShouldBe(true);
+                subject.WhenModelBound().ShouldBe(new Amount(1M));
+
+                //or
+
+                WhenUsedToCreateAmount(subject).ShouldBe(1M);
+                WhenValidated(subject).ShouldBe(true);
+                WhenModelBound(subject).ShouldBe(new Amount(1M));
+            })    
+        }
+        
