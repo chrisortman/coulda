@@ -34,7 +34,7 @@ namespace Coulda.Examples
                     number = 5;
                 });
 
-                ctx.ShouldChange("the number", x => number).From(2).To(5);
+                ctx.ShouldChange("the number", x => number).From(1).To(5);
             });
         }
 

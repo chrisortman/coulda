@@ -75,8 +75,11 @@ namespace Coulda.Test
             get { return "should"; }
         }
 
+        public CouldaTestContext Parent { get; set; }
+
         public virtual void Run()
         {
+            
             if(Setup != null)
             {
                 Setup();
@@ -114,7 +117,7 @@ namespace Coulda.Test
 
         public void Should(string description, Action action)
         {
-            _shoulds.Enqueue(new ShouldContext() { Description = description, Should = action});
+            _shoulds.Enqueue(new ShouldContext() { Description = description, Should = action, Parent = this});
         }
 
         public ShouldChangeContext<VALUE> ShouldChange<VALUE>(string description, Func<object, VALUE> valueGetter)
@@ -172,7 +175,18 @@ namespace Coulda.Test
                     var nested = ctx.GetTestByDescription(description);
                     if(nested != null)
                     {
-                        nested.Setup = ctx._before;
+                        nested.Setup = () =>
+                        {
+                            //if (_before != null)
+                            //{
+                            //    _before();
+                            //}
+
+                            if (ctx._before != null)
+                            {
+                                ctx._before();
+                            }
+                        };
                         return nested;
                     }
                 }

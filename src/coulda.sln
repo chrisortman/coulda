@@ -1,5 +1,13 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C106708-EF46-4E6C-B9B2-BF62391E23B8}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Install.reg = ..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Install.reg
+		..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Uninstall.reg = ..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Uninstall.reg
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.Test", "..\test\coulda.Test\Coulda.Test.csproj", "{648CA99E-9B15-4EC9-9632-07D877204E19}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda", "coulda\Coulda.csproj", "{BB834711-AA5E-44CB-B316-32C2A64CB078}"
@@ -8,16 +16,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.Examples", "Coulda.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.MsTest.Example", "Coulda.MsTest.Example\Coulda.MsTest.Example.csproj", "{0AC8B4EF-1203-4FD2-BA42-3146F2B9CCD3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C106708-EF46-4E6C-B9B2-BF62391E23B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.XUnit", "Coulda.XUnit\Coulda.XUnit.csproj", "{97BEF5FE-DC4C-47C3-AD68-391470DEF2DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coulda.NUnit", "Coulda.NUnit\Coulda.NUnit.csproj", "{92FF4BAF-BF42-45A4-AA17-02D14ADE9987}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9FD7F52E-152D-48E5-BDCA-161741AA3DCC}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Install.reg = ..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Install.reg
-		..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Uninstall.reg = ..\..\..\temp\UnitTestTypeExtensibility\UnitTestTypeExtensionSample\RowTestSample\Uninstall.reg
+		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = coulda.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -39,8 +47,19 @@ Global
 		{0AC8B4EF-1203-4FD2-BA42-3146F2B9CCD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC8B4EF-1203-4FD2-BA42-3146F2B9CCD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC8B4EF-1203-4FD2-BA42-3146F2B9CCD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97BEF5FE-DC4C-47C3-AD68-391470DEF2DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97BEF5FE-DC4C-47C3-AD68-391470DEF2DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97BEF5FE-DC4C-47C3-AD68-391470DEF2DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97BEF5FE-DC4C-47C3-AD68-391470DEF2DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92FF4BAF-BF42-45A4-AA17-02D14ADE9987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92FF4BAF-BF42-45A4-AA17-02D14ADE9987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92FF4BAF-BF42-45A4-AA17-02D14ADE9987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92FF4BAF-BF42-45A4-AA17-02D14ADE9987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = coulda.vsmdi
 	EndGlobalSection
 EndGlobal

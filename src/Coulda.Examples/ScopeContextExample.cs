@@ -61,5 +61,27 @@ namespace Coulda.Examples
                 });
             });
         }
+
+        [CouldaTestAttribute]
+        public CouldaTestContext Nested_contexts_with_setups()
+        {
+            int i = 5;
+            return Context("A parent context with a before block", ctx =>
+            {
+                ctx.Before(() => i = i + 1 /* 6 */);
+
+                ctx.Context("A nested context within the parent", nc2 =>
+                {
+                    nc2.Before(() => i = i + 1 /*7*/);
+
+                    nc2.Context("A nested context with in the nested context", nc3 =>
+                    {
+                        nc3.Before(() => i = i + 1 /* 8 */);
+
+                        nc3.Should("have invoked all the before hooks", () => Assert.Equal(8, i));
+                    });
+                });
+            });
+        }
     }
 }
