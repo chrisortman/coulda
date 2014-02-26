@@ -110,6 +110,7 @@ namespace Coulda.Test
         //METHODS MENT FOR USER
         public void NoSetup() {}
 
+        internal CouldaTestContext Parent { get; set; }
         public void Before(Action setup)
         {
             _before = setup; 
@@ -177,15 +178,30 @@ namespace Coulda.Test
                     {
                         nested.Setup = () =>
                         {
+                            Stack<Action> befores = new Stack<Action>();
+
                             //if (_before != null)
                             //{
-                            //    _before();
+                            //    befores.Push(_before);
                             //}
 
-                            if (ctx._before != null)
+                            CouldaTestContext parent = nested.Parent;
+                            while (parent != null)
                             {
-                                ctx._before();
+                                befores.Push(parent._before);
+                                parent = parent.Parent;
                             }
+
+
+                            while (befores.Count > 0)
+                            {
+                                var beforeAction = befores.Pop();
+                                if (beforeAction != null)
+                                {
+                                    beforeAction();
+                                }
+                            }
+                            
                         };
                         return nested;
                     }
@@ -198,6 +214,7 @@ namespace Coulda.Test
         public void Context(string description, Action<CouldaTestContext> test)
         {
             var ctx = new CouldaTestContext(_description + " " + description);
+            ctx.Parent = this;
             test(ctx);
             _nestedContexts.Add(ctx);
         }
